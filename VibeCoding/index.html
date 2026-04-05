@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pong Game with Power-ups</title>
+<alink rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Operation Bar -->
+<div id="operation-bar">
+<div id="game-controls">
+<button id="start-btn" class="control-btn">Start</button>
+<button id="pause-btn" class="control-btn" disabled>Pause</button>
+<button id="restart-button" class="control-btn" disabled>Restart</button>
+</div>
+<div id="mode-controls">
+<div class="mode-panel">
+<div>Left Player</div>
+<button id="left-human" class="mode-btn active">Human (W/S)</button>
+<button id="left-pc" class="mode-btn">PC</button>
+</div>
+<div class="mode-panel">
+<div>Right Player</div>
+<button id="right-human" class="mode-btn active">Human (↑/↓)</button>
+<button id="right-pc" class="mode-btn">PC</button>
+</div>
+</div>
+<button id="settings-btn" class="control-btn">Settings</button>
+</div>
+<!-- Game Container -->
+<div id="game-container">
+<div id="score">0 : 0</div>
+<div id="controls">
+Left Player: W (up) / S (down) | Right Player: ↑ (up) / ↓ (down) | Space: Pause | First to 11 Wins
+</div>
+<div id="player1-buffs" class="active-buff"></div>
+<div id="player2-buffs" class="active-buff"></div>
+<div id="ball"></div>
+<div id="player1-paddle" class="paddle"></div>
+<div id="player2-paddle" class="paddle"></div>
+<!-- Buff blocks -->
+<div id="buff-slow1" class="buff-block buff-slow" title="Slow Down: Reduces ball speed by 20% for 3 rounds"></div>
+<div id="buff-split1" class="buff-block buff-split" title="Split: Ball splits into 3 copies"></div>
+<div id="buff-color1" class="buff-block buff-color" title="Color: Changes ball color randomly for 5 rounds"></div>
+<div id="buff-enlarge1" class="buff-block buff-enlarge" title="Enlarge: Makes your paddle 50% larger for 3 rounds"></div>
+<div id="buff-shrink1" class="buff-block buff-shrink" title="Shrink: Makes opponent's paddle 40% smaller for 3 rounds"></div>
+<div id="buff-slow2" class="buff-block buff-slow" title="Slow Down: Reduces ball speed by 20% for 3 rounds"></div>
+<div id="buff-split2" class="buff-block buff-split" title="Split: Ball splits into 3 copies"></div>
+<div id="buff-color2" class="buff-block buff-color" title="Color: Changes ball color randomly for 5 rounds"></div>
+<div id="buff-enlarge2" class="buff-block buff-enlarge" title="Enlarge: Makes your paddle 50% larger for 3 rounds"></div>
+<div id="buff-shrink2" class="buff-block buff-shrink" title="Shrink: Makes opponent's paddle 40% smaller for 3 rounds"></div>
+<div id="start-screen">
+<h1 class="game-title">PONG with POWER-UPS</h1>
+<p>Touch colored blocks to activate special abilities!</p>
+<p>Blue: Slow Down | Red: Split Ball | Purple: Color Change | Green: Enlarge Paddle | Orange: Shrink Opponent</p>
+<p>First to 11 points wins!</p>
+<button id="start-button">START GAME</button>
+</div>
+</div>
+<!-- Settings Panel -->
+<div id="settings-panel">
+<div class="settings-container">
+<h2 class="settings-title">Game Settings</h2>
+<div class="settings-group">
+<h3 class="settings-label">Buff Settings</h3>
+<div class="settings-row">
+<label for="buff-frequency">Buff Refresh Speed Level:</label>
+<div class="slider-container">
+<input type="range" id="buff-frequency" class="settings-slider" min="0" max="5" value="3">
+<span id="buff-frequency-value" class="value-display">3</span>
+</div>
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">0: No buffs | 1: 1 block per 10 rounds | 2: 2 blocks per 10 rounds | 3: 3 blocks per 10 rounds | 4: 4 blocks per 10 rounds | 5: 5 blocks per 10 rounds</span>
+</div>
+</div>
+</div>
+<div class="settings-group">
+<h3 class="settings-label">Ball Settings</h3>
+<div class="settings-row">
+<label for="ball-base-speed">Base Ball Speed:</label>
+<input type="number" id="ball-base-speed" class="settings-input" min="1" max="15" value="5">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Initial speed of the ball (1-15)</span>
+</div>
+</div>
+<div class="settings-row">
+<label for="ball-min-speed">Minimum Ball Speed:</label>
+<input type="number" id="ball-min-speed" class="settings-input" min="1" max="10" value="2">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Minimum allowed ball speed (1-10)</span>
+</div>
+</div>
+<div class="settings-row">
+<label for="ball-max-speed">Maximum Ball Speed:</label>
+<input type="number" id="ball-max-speed" class="settings-input" min="5" max="20" value="12">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Maximum allowed ball speed (5-20)</span>
+</div>
+</div>
+<div class="settings-row">
+<label for="ball-speed-ratio">Speed Increase Ratio:</label>
+<input type="number" id="ball-speed-ratio" class="settings-input" min="1.1" max="1.5" step="0.1" value="1.1">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Multiplier applied to ball speed after each paddle hit (1.1-1.5)</span>
+</div>
+</div>
+</div>
+<div class="settings-group">
+<h3 class="settings-label">Paddle Settings</h3>
+<div class="settings-row">
+<label for="paddle-min-length">Minimum Paddle Length:</label>
+<input type="number" id="paddle-min-length" class="settings-input" min="30" max="100" value="60">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Minimum paddle height in pixels (30-100)</span>
+</div>
+</div>
+<div class="settings-row">
+<label for="paddle-max-length">Maximum Paddle Length:</label>
+<input type="number" id="paddle-max-length" class="settings-input" min="100" max="200" value="120">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Maximum paddle height in pixels (100-200)</span>
+</div>
+</div>
+<div class="settings-row">
+<label for="paddle-size-ratio">Size Change Ratio:</label>
+<input type="number" id="paddle-size-ratio" class="settings-input" min="1.1" max="1.5" step="0.1" value="1.2">
+<div class="tooltip">
+<span>?</span>
+<span class="tooltiptext">Multiplier for paddle size buffs (1.1-1.5)</span>
+</div>
+</div>
+</div>
+<div class="settings-btns">
+<button id="save-settings" class="settings-btn">Save & Resume</button>
+<button id="cancel-settings" class="settings-btn">Cancel</button>
+</div>
+</div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT News Viewer</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-box button {
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-box button:hover {
+      background: var(--primary-hover);
+    }
+
+    .status {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .status.loading {
+      color: var(--primary);
+    }
+
+    .status.error {
+      color: #dc2626;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 0 20px 40px;
+    }
+
+    .news-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .news-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: var(--border);
+      display: block;
+    }
+
+    .news-image.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .news-content {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .news-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .news-title a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .news-title a:hover {
+      color: var(--primary);
+    }
+
+    .news-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .news-source {
+      font-weight: 500;
+      color: var(--primary);
+    }
+
+    .news-description {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .search-box {
+        flex-direction: column;
+      }
+
+      .search-box button {
+        width: 100%;
+      }
+
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📰 IT News Viewer</h1>
+      <p>Latest technology news from TianAPI</p>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search news by keyword..." />
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <div id="status" class="status loading">Loading news...</div>
+    <div id="newsGrid" class="news-grid"></div>
+  </div>
+
+  <script>
+    // ================== API CONFIGURATION ==================
+    // ⚠️ IMPORTANT: Replace '{YOUR_API_KEY}' with your actual TianAPI key
+    const API_KEY = 'bd729d51d22a210931de970ea7298f77';
+    const API_URL = `https://apis.tianapi.com/it/index?key=${API_KEY}&num=20`;
+    // =======================================================
+
+    let allNews = [];
+
+    const statusEl = document.getElementById('status');
+    const newsGridEl = document.getElementById('newsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+
+    // Fetch news from API
+    async function fetchNews() {
+      try {
+        showStatus('Loading news...', 'loading');
+        
+        const response = await fetch(API_URL);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Validate API response
+        if (data.code !== 200) {
+          throw new Error(data.msg || `API error code: ${data.code}`);
+        }
+        
+        if (!data.result?.newslist || !Array.isArray(data.result.newslist)) {
+          throw new Error('Invalid news data format');
+        }
+        
+        allNews = data.result.newslist;
+        renderNews(allNews);
+        showStatus('', null);
+        
+      } catch (error) {
+        console.error('Failed to fetch news:', error);
+        showStatus(`Error: ${error.message}. Please check your API key and connection.`, 'error');
+        newsGridEl.innerHTML = '';
+      }
+    }
+
+    // Display status message
+    function showStatus(message, type) {
+      if (!message) {
+        statusEl.style.display = 'none';
+        statusEl.className = 'status';
+        return;
+      }
+      statusEl.style.display = 'block';
+      statusEl.textContent = message;
+      statusEl.className = `status ${type || ''}`;
+    }
+
+    // Render news cards
+    function renderNews(newsList) {
+      if (newsList.length === 0) {
+        newsGridEl.innerHTML = '<div class="no-results">No news found matching your search.</div>';
+        return;
+      }
+
+      newsGridEl.innerHTML = newsList.map(news => {
+        const title = news.title || 'Untitled';
+        const url = news.url || '#';
+        const source = news.source || 'Unknown';
+        const ctime = news.ctime || '';
+        const description = news.description || '';
+        const picUrl = news.picUrl || '';
+
+        // Format date if possible
+        const formattedDate = ctime ? new Date(ctime).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        }) : '';
+
+        // Image handling
+        const imageHtml = picUrl 
+          ? `<img class="news-image" src="${picUrl}" alt="${title}" onerror="this.parentElement.innerHTML='<div class=\\'news-image placeholder\\'>📷 No Image</div>'">`
+          : `<div class="news-image placeholder">📷 No Image</div>`;
+
+        return `
+          <article class="news-card">
+            ${imageHtml}
+            <div class="news-content">
+              <h2 class="news-title">
+                <a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a>
+              </h2>
+              <div class="news-meta">
+                <span class="news-source">${escapeHtml(source)}</span>
+                ${formattedDate ? `<span>• ${formattedDate}</span>` : ''}
+              </div>
+              ${description ? `<p class="news-description">${escapeHtml(description)}</p>` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // Filter news by keyword (client-side)
+    function filterNews(keyword) {
+      if (!keyword || !keyword.trim()) {
+        renderNews(allNews);
+        return;
+      }
+      
+      const lowerKeyword = keyword.toLowerCase().trim();
+      const filtered = allNews.filter(news => {
+        const title = (news.title || '').toLowerCase();
+        const description = (news.description || '').toLowerCase();
+        const source = (news.source || '').toLowerCase();
+        return title.includes(lowerKeyword) || 
+               description.includes(lowerKeyword) || 
+               source.includes(lowerKeyword);
+      });
+      
+      renderNews(filtered);
+      
+      if (filtered.length === 0) {
+        showStatus(`No results found for "${keyword}"`, null);
+      } else {
+        showStatus('', null);
+      }
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Event listeners
+    searchBtn.addEventListener('click', () => {
+      filterNews(searchInput.value);
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        filterNews(searchInput.value);
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      // Optional: real-time filtering as user types
+      // filterNews(e.target.value);
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Warn if API key not replaced
+      if (API_KEY === '{YOUR_API_KEY}' || !API_KEY) {
+        showStatus('⚠️ Please replace {YOUR_API_KEY} with your actual TianAPI key in the code.', 'error');
+        return;
+      }
+      fetchNews();
+    });
+  </script>
+</body>
+</html>

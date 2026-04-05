@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game with Power-ups</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>PONG with POWER-UPS</h1>
+            <div class="score-display">
+                <span id="left-score">0</span> : <span id="right-score">0</span>
+            </div>
+            <div class="controls">
+                <button id="start-btn">Start</button>
+                <button id="pause-btn">Pause</button>
+                <button id="restart-btn">Restart</button>
+                <button id="settings-btn">Settings</button>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <div class="player-info">
+                <div class="left-player">
+                    <h3>Left Player</h3>
+                    <p>Human (W/S)</p>
+                </div>
+                <div class="right-player">
+                    <h3>Right Player</h3>
+                    <p>Human (↑/↓)</p>
+                </div>
+            </div>
+            <div class="control-hint">
+                <p>Left Player: W (up) / S (down) | Right Player: ↑ (up) / ↓ (down) | Space: Pause</p>
+            </div>
+        </div>
+
+        <div class="game-description">
+            <h2>Touch colored blocks to activate special abilities!</h2>
+            <div class="power-ups">
+                <span class="power-up blue">Blue: Slow Down</span>
+                <span class="power-up red">Red: Split Ball</span>
+                <span class="power-up purple">Purple: Color Change</span>
+                <span class="power-up green">Green: Enlarge Paddle</span>
+                <span class="power-up orange">Orange: Shrink Opponent</span>
+            </div>
+        </div>
+
+        <div class="game-canvas">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div class="settings-modal" id="settings-modal">
+            <div class="modal-content">
+                <h2>Game Settings</h2>
+                
+                <div class="setting-section">
+                    <h3>Buff Settings</h3>
+                    <label>
+                        Buff Refresh Speed Level:
+                        <select id="buff-level">
+                            <option value="0">0: No buffs</option>
+                            <option value="1">1: 1 block per 10 rounds</option>
+                            <option value="2">2: 2 blocks per 10 rounds</option>
+                            <option value="3" selected>3: 3 blocks per 10 rounds</option>
+                            <option value="4">4: 4 blocks per 10 rounds</option>
+                            <option value="5">5: 5 blocks per 10 rounds</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="setting-section">
+                    <h3>Ball Settings</h3>
+                    <label>
+                        Base Ball Speed:
+                        <input type="number" id="base-speed" min="1" max="15" value="5">
+                        <span class="hint">Initial speed of the ball (1-15)</span>
+                    </label>
+                    <label>
+                        Minimum Ball Speed:
+                        <input type="number" id="min-speed" min="1" max="10" value="3">
+                        <span class="hint">Minimum allowed ball speed (1-10)</span>
+                    </label>
+                    <label>
+                        Maximum Ball Speed:
+                        <input type="number" id="max-speed" min="5" max="20" value="15">
+                        <span class="hint">Maximum allowed ball speed (5-20)</span>
+                    </label>
+                    <label>
+                        Speed Increase Ratio:
+                        <input type="number" id="speed-ratio" min="1.1" max="1.5" step="0.1" value="1.1">
+                        <span class="hint">Multiplier applied to ball speed after each paddle hit (1.1-1.5)</span>
+                    </label>
+                </div>
+
+                <div class="setting-section">
+                    <h3>Paddle Settings</h3>
+                    <label>
+                        Minimum Paddle Length:
+                        <input type="number" id="min-paddle" min="30" max="100" value="50">
+                        <span class="hint">Minimum paddle height in pixels (30-100)</span>
+                    </label>
+                    <label>
+                        Maximum Paddle Length:
+                        <input type="number" id="max-paddle" min="100" max="200" value="150">
+                        <span class="hint">Maximum paddle height in pixels (100-200)</span>
+                    </label>
+                    <label>
+                        Size Change Ratio:
+                        <input type="number" id="paddle-ratio" min="1.1" max="1.5" step="0.1" value="1.2">
+                        <span class="hint">Multiplier for paddle size buffs (1.1-1.5)</span>
+                    </label>
+                </div>
+
+                <div class="modal-buttons">
+                    <button id="save-btn">Save & Resume</button>
+                    <button id="cancel-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

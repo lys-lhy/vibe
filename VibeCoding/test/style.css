@@ -1,0 +1,298 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a2e;
+    color: #eee;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: #00d9ff;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #00d9ff;
+    color: #1a1a2e;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #00b8d9;
+    transform: scale(1.05);
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.player-info {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 15px;
+}
+
+.left-player, .right-player {
+    background-color: #16213e;
+    padding: 15px 25px;
+    border-radius: 8px;
+    border: 2px solid #00d9ff;
+}
+
+.left-player h3, .right-player h3 {
+    color: #00d9ff;
+    margin-bottom: 5px;
+}
+
+.control-hint {
+    background-color: #16213e;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.game-description {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-description h2 {
+    color: #00d9ff;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.power-ups {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.power-up {
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.power-up.blue {
+    background-color: #0066ff;
+    color: white;
+}
+
+.power-up.red {
+    background-color: #ff3333;
+    color: white;
+}
+
+.power-up.purple {
+    background-color: #9933ff;
+    color: white;
+}
+
+.power-up.green {
+    background-color: #33ff66;
+    color: #1a1a2e;
+}
+
+.power-up.orange {
+    background-color: #ff9933;
+    color: #1a1a2e;
+}
+
+.game-canvas {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#gameCanvas {
+    background-color: #0f0f23;
+    border: 3px solid #00d9ff;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+}
+
+.settings-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #16213e;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 2px solid #00d9ff;
+}
+
+.modal-content h2 {
+    color: #00d9ff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.setting-section {
+    margin-bottom: 25px;
+}
+
+.setting-section h3 {
+    color: #00d9ff;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #00d9ff;
+    padding-bottom: 5px;
+}
+
+.setting-section label {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.setting-section select,
+.setting-section input[type="number"] {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 5px;
+    border: 2px solid #00d9ff;
+    border-radius: 5px;
+    background-color: #1a1a2e;
+    color: #eee;
+    font-size: 1rem;
+}
+
+.setting-section select:focus,
+.setting-section input[type="number"]:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+}
+
+.setting-section .hint {
+    display: block;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 12px 30px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+#save-btn {
+    background-color: #33ff66;
+    color: #1a1a2e;
+}
+
+#save-btn:hover {
+    background-color: #29cc52;
+    transform: scale(1.05);
+}
+
+#cancel-btn {
+    background-color: #ff3333;
+    color: white;
+}
+
+#cancel-btn:hover {
+    background-color: #cc2929;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .score-display {
+        font-size: 2rem;
+    }
+
+    .player-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .power-ups {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .controls {
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT News Viewer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+
+    .search-box {
+      background: white;
+      border-radius: 50px;
+      padding: 8px 20px;
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      padding: 10px;
+    }
+
+    .search-box button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .search-box button:hover {
+      background: #5568d3;
+    }
+
+    .status {
+      text-align: center;
+      padding: 40px 20px;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .status.error {
+      background: rgba(255, 82, 82, 0.2);
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 10px;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .news-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #f0f0f0;
+      display: block;
+    }
+
+    .news-content {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .news-title a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .news-title a:hover {
+      color: #667eea;
+    }
+
+    .news-meta {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .news-description {
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      flex: 1;
+    }
+
+    .news-source {
+      font-size: 0.8rem;
+      color: #888;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: white;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .search-box {
+        flex-direction: column;
+        border-radius: 12px;
+        padding: 15px;
+      }
+
+      .search-box input {
+        width: 100%;
+      }
+
+      .search-box button {
+        width: 100%;
+      }
+
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📰 IT News Viewer</h1>
+      <p>Latest technology news from TianAPI</p>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search news by title or description..." />
+      <button onclick="filterNews()">🔍 Search</button>
+    </div>
+
+    <div id="status" class="status loading">
+      <div class="spinner"></div>
+      <p style="margin-top: 15px;">Loading news...</p>
+    </div>
+
+    <div id="newsGrid" class="news-grid"></div>
+  </div>
+
+  <script>
+    // ================= API Configuration =================
+    const API_KEY = 'bd729d51d22a210931de970ea7298f77';
+    const API_URL = 'https://apis.tianapi.com/it/index';
+
+    // ================= Global Variables =================
+    let allNews = [];
+    const newsGrid = document.getElementById('newsGrid');
+    const statusEl = document.getElementById('status');
+    const searchInput = document.getElementById('searchInput');
+
+    // ================= Default Image Fallback =================
+    const DEFAULT_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"%3E%3Crect fill="%23f0f0f0" width="400" height="200"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="14" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image Available%3C/text%3E%3C/svg%3E';
+
+    // ================= Format Date =================
+    function formatDateTime(dateTimeStr) {
+      if (!dateTimeStr) return '';
+      const date = new Date(dateTimeStr);
+      if (isNaN(date.getTime())) return dateTimeStr;
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // ================= Create News Card =================
+    function createNewsCard(news) {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+
+      const title = news.title || 'Untitled';
+      const url = news.url || '#';
+      const source = news.source || 'Unknown Source';
+      const ctime = formatDateTime(news.ctime);
+      const description = news.description || 'No description available.';
+      const picUrl = news.picUrl || '';
+
+      card.innerHTML = `
+        <img 
+          class="news-image" 
+          src="${picUrl}" 
+          alt="${title}"
+          onerror="this.src='${DEFAULT_IMAGE}'; this.onerror=null;"
+          loading="lazy"
+        />
+        <div class="news-content">
+          <h3 class="news-title">
+            <a href="${url}" target="_blank" rel="noopener noreferrer">${title}</a>
+          </h3>
+          <div class="news-meta">
+            <span>📅 ${ctime}</span>
+            <span>📰 ${source}</span>
+          </div>
+          <p class="news-description">${description}</p>
+          <div class="news-source">Source: ${source}</div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // ================= Render News =================
+    function renderNews(newsList) {
+      newsGrid.innerHTML = '';
+
+      if (!newsList || newsList.length === 0) {
+        newsGrid.innerHTML = `
+          <div class="no-results">
+            <p>😕 No news found matching your search.</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Try different keywords or clear the search.</p>
+          </div>
+        `;
+        return;
+      }
+
+      newsList.forEach(news => {
+        const card = createNewsCard(news);
+        newsGrid.appendChild(card);
+      });
+    }
+
+    // ================= Filter News (Client-side) =================
+    function filterNews() {
+      const keyword = searchInput.value.trim().toLowerCase();
+
+      if (!keyword) {
+        renderNews(allNews);
+        return;
+      }
+
+      const filtered = allNews.filter(news => {
+        const title = (news.title || '').toLowerCase();
+        const description = (news.description || '').toLowerCase();
+        return title.includes(keyword) || description.includes(keyword);
+      });
+
+      renderNews(filtered);
+    }
+
+    // ================= Allow Enter Key to Search =================
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        filterNews();
+      }
+    });
+
+    // ================= Show Status Message =================
+    function showStatus(message, isError = false) {
+      statusEl.className = `status${isError ? ' error' : ''}`;
+      statusEl.innerHTML = `<p>${message}</p>`;
+      statusEl.style.display = message ? 'block' : 'none';
+    }
+
+    // ================= Fetch News from API =================
+    async function fetchNews() {
+      try {
+        showStatus('Loading news...', false);
+        statusEl.style.display = 'block';
+        newsGrid.innerHTML = '';
+
+        const response = await fetch(`${API_URL}?key=${API_KEY}&num=20`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Check API response code
+        if (data.code !== 200) {
+          throw new Error(data.msg || `API returned code: ${data.code}`);
+        }
+
+        // Extract newslist from correct path
+        const newslist = data.result?.newslist;
+
+        if (!newslist || !Array.isArray(newslist) || newslist.length === 0) {
+          throw new Error('No news articles found in the response.');
+        }
+
+        // Store in global variable for client-side search
+        allNews = newslist;
+
+        // Hide loading status and render news
+        statusEl.style.display = 'none';
+        renderNews(allNews);
+
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        showStatus(`⚠️ ${error.message || 'Failed to load news. Please try again later.'}`, true);
+        newsGrid.innerHTML = '';
+      }
+    }
+
+    // ================= Initialize =================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Warn if API key not configured
+      if (API_KEY === '{YOUR_API_KEY}' || !API_KEY) {
+        showStatus('⚠️ Please configure your TianAPI key in the code.', true);
+        return;
+      }
+
+      fetchNews();
+    });
+  </script>
+</body>
+</html>

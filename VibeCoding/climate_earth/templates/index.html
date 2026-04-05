@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Climate Earth Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Tooltip for plant hover info -->
+    <div id="plant-tooltip" class="tooltip-3d hidden">
+        <div class="tooltip-header">
+            <span id="tooltip-plant-name" class="tooltip-title">Plant Name</span>
+            <span id="tooltip-continent-badge" class="continent-badge">Continent</span>
+        </div>
+        <div class="tooltip-body">
+            <p><strong>Scientific:</strong> <span id="tooltip-scientific">-</span></p>
+            <p><strong>Family:</strong> <span id="tooltip-family">-</span></p>
+            <p><strong>Type:</strong> <span id="tooltip-type">-</span></p>
+            <p><strong>Abundance:</strong> <span id="tooltip-abundance">-</span></p>
+            <p><strong>Elevation:</strong> <span id="tooltip-elevation">-</span></p>
+            <p class="tooltip-info" id="tooltip-description">-</p>
+        </div>
+        <div class="tooltip-footer">
+            <small>Hover over plant markers to see details</small>
+        </div>
+    </div>
+
+    <!-- Top Control Panel -->
+    <div class="ui-panel top-panel">
+        <h1>🌍 Climate Earth <span id="dataset-label">Temperature</span></h1>
+        
+        <div class="controls">
+            <select id="dataset-select">
+                <option value="temp">🌡️ Temperature</option>
+                <option value="co2">🏭 CO₂ Concentration</option>
+                <option value="rain">🌧️ Rainfall</option>
+                <option value="vegetation">🌿 Vegetation</option>
+            </select>
+            
+            <div class="slider-container">
+                <label>Year: <span id="year-display">2025</span></label>
+                <input type="range" id="time-slider" min="1880" max="2025" value="2025" step="1">
+            </div>
+
+            <!-- Vegetation Controls -->
+            <div id="vegetation-controls" class="hidden">
+                <select id="plant-select">
+                    <option value="">-- All Plants --</option>
+                </select>
+                <select id="continent-filter">
+                    <option value="">-- All Continents --</option>
+                    <option value="europe">🇪🇺 Europe</option>
+                    <option value="asia">🌏 Asia</option>
+                    <option value="africa">🌍 Africa</option>
+                    <option value="north_america">🌎 N. America</option>
+                    <option value="south_america">🌎 S. America</option>
+                    <option value="oceania">🌏 Oceania</option>
+                </select>
+                <button id="toggle-plant-layer" class="small-btn">👁️ Toggle</button>
+            </div>
+
+            <!-- Legends -->
+            <div class="legend" id="legend-box">
+                <span>Low</span>
+                <div class="gradient-bar"></div>
+                <span>High</span>
+            </div>
+            
+            <div id="vegetation-legend" class="hidden legend">
+                <span>🌱 Plants by Continent</span>
+                <div class="continent-legend" id="continent-legend-items"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Panel -->
+    <div class="ui-panel quiz-panel" id="quiz-panel">
+        <div class="quiz-header">
+            <h3>🧠 Knowledge Check</h3>
+            <span id="quiz-progress">0/10</span>
+        </div>
+        <div id="quiz-content">
+            <p class="instruction">Explore the map to trigger questions!</p>
+            <button id="start-quiz-btn" class="action-btn">Start Quiz Round</button>
+        </div>
+        <div id="feedback-area" class="hidden">
+            <div id="feedback-msg"></div>
+            <button id="next-q-btn" class="action-btn">Next Question</button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-indicator" class="loading hidden">Loading vegetation data...</div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
