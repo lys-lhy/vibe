@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 IT科技新闻</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            background: rgba(0, 30, 60, 0.7);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(0, 198, 255, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-top: 8px;
+            color: #a0d2ff;
+        }
+
+        .api-status {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 5px 15px;
+            background: rgba(0, 198, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #00c6ff;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #search-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #0072ff;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 114, 255, 0.1);
+        }
+
+        #search-input:focus {
+            border-color: #00c6ff;
+            box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.2);
+        }
+
+        #search-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+        }
+
+        #search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
+
+        #search-btn:active {
+            transform: translateY(1px);
+        }
+
+        .news-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+        }
+
+        .news-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .news-card:hover .news-image {
+            transform: scale(1.08);
+        }
+
+        .news-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #0f2027;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.3s;
+        }
+
+        .news-card:hover .news-title {
+            color: #0072ff;
+        }
+
+        .news-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            flex-grow: 1;
+            font-size: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .news-source {
+            font-weight: bold;
+            color: #0072ff;
+            font-size: 0.95em;
+        }
+
+        .news-date {
+            font-size: 0.9em;
+            color: #999;
+            background: #f8f9fa;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+            font-size: 1.5em;
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00c6ff;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            grid-column: 1 / -1;
+            background: #ff4757;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 0 20px;
+        }
+
+        .error h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .error-info {
+            margin-top: 15px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+
+        .error-info ol {
+            text-align: left;
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .error-info li {
+            margin-bottom: 8px;
+        }
+
+        .no-news {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+            font-size: 1.5em;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            grid-column: 1 / -1;
+        }
+
+        .refresh-btn {
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: white;
+            color: #0f2027;
+        }
+
+        .api-guide {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .api-guide h3 {
+            color: #0072ff;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+
+        .api-guide p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        .api-guide code {
+            background: #e9f7fe;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #0072ff;
+            font-weight: bold;
+        }
+
+        .api-guide a {
+            color: #0072ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .api-guide a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .news-container {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            #search-input, #search-btn {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .news-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 IT科技新闻</h1>
+            <p class="subtitle">专注互联网、人工智能、芯片、5G等前沿科技资讯</p>
+            <div class="api-status">✓ 天行数据IT新闻接口</div>
+        </header>
+
+        <div class="api-guide">
+            <h3>🔧 API配置说明</h3>
+            <p>本页面使用天行数据官方IT科技新闻接口：</p>
+            <p><strong>接口地址：</strong> <code>https://apis.tianapi.com/it/index</code></p>
+            <p><strong>申请步骤：</strong></p>
+            <ol>
+                <li>访问 <a href="https://www.tianapi.com/" target="_blank">天行数据官网</a> 注册账号</li>
+                <li>在接口市场搜索 "<strong>IT科技</strong>" 或 "<strong>it</strong>"</li>
+                <li>点击【立即申请】，选择免费版（每天100次）</li>
+                <li>复制API Key，替换代码中的 <code>YOUR_API_KEY</code></li>
+                <li>等待审核通过（通常1-5分钟），刷新页面即可</li>
+            </ol>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="🔍 搜索科技新闻关键词（如：AI、芯片、5G）...">
+                <button id="search-btn">搜索</button>
+            </div>
+        </div>
+
+        <div id="news-container" class="news-container">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>📡 正在获取最新科技新闻...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 天行数据IT科技新闻API配置 ==========
+        // ⚠️ 请将 YOUR_API_KEY 替换为你自己的API密钥
+        const API_KEY = 'bd729d51d22a210931de970ea7298f77'; 
+        const IT_NEWS_API = 'https://apis.tianapi.com/it/index';
+        
+        let allNewsData = [];
+
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查是否配置了API Key
+            if (API_KEY === 'YOUR_API_KEY') {
+                showApiKeyError();
+                return;
+            }
+            
+            loadNews();
+            
+            // 搜索功能
+            document.getElementById('search-btn').addEventListener('click', searchNews);
+            
+            // 回车搜索
+            document.getElementById('search-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchNews();
+                }
+            });
+        });
+
+        // ========== 显示API Key未配置错误 ==========
+        function showApiKeyError() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = `
+                <div class="error">
+                    <h3>⚠️ API密钥未配置</h3>
+                    <p>请先在代码中配置你的天行数据API密钥</p>
+                    <div class="error-info">
+                        <p>操作步骤：</p>
+                        <ol>
+                            <li>打开本HTML文件</li>
+                            <li>找到第197行: <code>const API_KEY = 'YOUR_API_KEY';</code></li>
+                            <li>将 YOUR_API_KEY 替换为你的实际密钥</li>
+                            <li>保存文件并刷新页面</li>
+                        </ol>
+                    </div>
+                    <button class="refresh-btn" onclick="location.reload()">🔄 刷新重试</button>
+                </div>
+            `;
+        }
+
+        // ========== 搜索新闻 ==========
+        function searchNews() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) {
+                loadNews();
+                return;
+            }
+            
+            if (!allNewsData.length) {
+                alert('⚠️ 请先等待新闻加载完成再搜索');
+                return;
+            }
+
+            const filteredNews = allNewsData.filter(article => 
+                article.title.toLowerCase().includes(query.toLowerCase()) || 
+                (article.description && article.description.toLowerCase().includes(query.toLowerCase()))
+            );
+
+            const container = document.getElementById('news-container');
+            if (filteredNews.length === 0) {
+                container.innerHTML = `<div class="no-news">📭 未找到与"${query}"相关的科技新闻</div>`;
+            } else {
+                displayNews(filteredNews.slice(0, 20));
+            }
+        }
+
+        // ========== 加载新闻 ==========
+        async function loadNews() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>📡 正在获取最新科技新闻...</div>
+                </div>
+            `;
+
+            try {
+                // 构建API请求URL（使用官方推荐的参数）
+                const url = `${IT_NEWS_API}?key=${API_KEY}&num=20`;
+                
+                console.log('🔧 请求API:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ API响应:', data);
+
+                if (data.code !== 200) {
+                    throw new Error(data.msg || 'API返回错误');
+                }
+
+                if (!data.result?.newslist || data.result.newslist.length === 0) {
+                    throw new Error('未获取到新闻数据');
+                }
+
+                allNewsData = data.result.newslist;
+                displayNews(allNewsData);
+
+            } catch (error) {
+                console.error('❌ 加载新闻失败:', error);
+                
+                // 显示友好错误提示 + 示例数据
+                container.innerHTML = `
+                    <div class="error">
+                        <h3>❌ ${error.message}</h3>
+                        <p>可能原因：</p>
+                        <div class="error-info">
+                            <ol>
+                                <li>API密钥未申请"IT科技"接口（需单独申请）</li>
+                                <li>今日免费调用次数已用完（免费版100次/天）</li>
+                                <li>API密钥输入错误或包含空格</li>
+                                <li>网络连接问题</li>
+                            </ol>
+                        </div>
+                        <button class="refresh-btn" onclick="loadNews()">🔄 重试加载</button>
+                    </div>
+                `;
+                
+                // 3秒后显示示例数据供预览
+                setTimeout(() => {
+                    container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>⚠️ 显示示例数据（API不可用）</div></div>';
+                    setTimeout(() => {
+                        displayNews(getSampleNews());
+                    }, 800);
+                }, 3000);
+            }
+        }
+
+        // ========== 显示新闻 ==========
+        function displayNews(articles) {
+            const container = document.getElementById('news-container');
+            
+            if (!articles || articles.length === 0) {
+                container.innerHTML = '<div class="no-news">📭 暂无科技新闻</div>';
+                return;
+            }
+
+            container.innerHTML = articles.map((article, index) => {
+                // 处理图片：优先使用picUrl，其次pic，最后使用默认图
+                const imageUrl = article.picUrl || article.pic || getRandomTechImage();
+                const description = article.description || article.title.substring(0, 80) + '...';
+                const source = article.source || '天行数据';
+                const date = formatTime(article.ctime || article.pubDate || article.date || article.time);
+
+                return `
+                    <div class="news-card" data-index="${index}">
+                        <img src="${imageUrl}" alt="${article.title}" class="news-image" 
+                             onerror="this.onerror=null;this.src='${getRandomTechImage()}'">
+                        <div class="news-content">
+                            <h3 class="news-title">${article.title}</h3>
+                            <p class="news-description">${description}</p>
+                            <div class="news-meta">
+                                <span class="news-source">${source}</span>
+                                <span class="news-date">${date}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 添加点击事件 - 跳转到原文
+            document.querySelectorAll('.news-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // 点击图片或标题区域才跳转，避免误触
+                    if (!e.target.closest('.news-date')) {
+                        const index = this.dataset.index;
+                        const article = articles[index];
+                        if (article.url) {
+                            window.open(article.url, '_blank', 'noopener,noreferrer');
+                        } else {
+                            alert('⚠️ 该新闻暂无原文链接');
+                        }
+                    }
+                });
+            });
+        }
+
+        // ========== 格式化时间 ==========
+        function formatTime(timeStr) {
+            if (!timeStr) return '刚刚';
+            
+            let date;
+            // 处理多种时间格式
+            if (typeof timeStr === 'number') {
+                // 时间戳（秒）
+                if (timeStr.toString().length === 10) {
+                    date = new Date(timeStr * 1000);
+                } else {
+                    // 时间戳（毫秒）
+                    date = new Date(timeStr);
+                }
+            } else if (typeof timeStr === 'string') {
+                // 尝试解析 "2024-03-10 15:30:00" 格式
+                if (timeStr.includes(' ')) {
+                    date = new Date(timeStr.replace(' ', 'T'));
+                } else {
+                    date = new Date(timeStr);
+                }
+            }
+            
+            // 如果解析失败，返回原始字符串或默认值
+            if (!date || isNaN(date.getTime())) {
+                return '未知时间';
+            }
+
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return `${minutes}分钟前`;
+            if (hours < 24) return `${hours}小时前`;
+            if (days < 7) return `${days}天前`;
+            
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hour = date.getHours().toString().padStart(2, '0');
+            const minute = date.getMinutes().toString().padStart(2, '0');
+            return `${month}/${day} ${hour}:${minute}`;
+        }
+
+        // ========== 随机科技图片（备用） ==========
+        function getRandomTechImage() {
+            const techImages = [
+                'https://picsum.photos/seed/tech1/400/220?blur=1',
+                'https://picsum.photos/seed/tech2/400/220?blur=1',
+                'https://picsum.photos/seed/ai/400/220?blur=1',
+                'https://picsum.photos/seed/chip/400/220?blur=1',
+                'https://picsum.photos/seed/5g/400/220?blur=1',
+                'https://picsum.photos/seed/robot/400/220?blur=1'
+            ];
+            return techImages[Math.floor(Math.random() * techImages.length)];
+        }
+
+        // ========== 示例数据（备用） ==========
+        function getSampleNews() {
+            return [
+                {
+                    title: "OpenAI发布新一代大模型GPT-5，推理能力提升300%",
+                    description: "OpenAI今日正式发布GPT-5，该模型在复杂推理、代码生成和多模态理解方面取得重大突破，参数量超过10万亿。",
+                    picUrl: "https://picsum.photos/seed/ai1/400/220?blur=1",
+                    source: "科技前沿",
+                    ctime: Math.floor(Date.now() / 1000) - 3600,
+                    url: "https://example.com/news1"
+                },
+                {
+                    title: "华为发布昇腾AI芯片，算力超越英伟达H100",
+                    description: "华为最新发布的昇腾910B AI芯片在MLPerf基准测试中表现优异，训练速度比上一代提升2.5倍，功耗降低30%。",
+                    picUrl: "https://picsum.photos/seed/chip1/400/220?blur=1",
+                    source: "半导体观察",
+                    ctime: Math.floor(Date.now() / 1000) - 7200,
+                    url: "https://example.com/news2"
+                },
+                {
+                    title: "中国量子计算机实现1000量子比特纠缠",
+                    description: "中国科学技术大学潘建伟团队成功实现1000个量子比特的纠缠态，刷新世界纪录，为实用化量子计算迈出关键一步。",
+                    picUrl: "https://picsum.photos/seed/quantum/400/220?blur=1",
+                    source: "科学网",
+                    ctime: Math.floor(Date.now() / 1000) - 10800,
+                    url: "https://example.com/news3"
+                },
+                {
+                    title: "苹果Vision Pro国行版正式开售，售价2.9万元起",
+                    description: "苹果混合现实头显Vision Pro国行版今日正式发售，支持中文语音助手和本地化应用生态，首批备货迅速售罄。",
+                    picUrl: "https://picsum.photos/seed/vr/400/220?blur=1",
+                    source: "IT之家",
+                    ctime: Math.floor(Date.now() / 1000) - 14400,
+                    url: "https://example.com/news4"
+                },
+                {
+                    title: "6G技术研发取得突破，峰值速率可达1Tbps",
+                    description: "工信部宣布我国6G技术研发取得重要进展，太赫兹通信技术实现1Tbps传输速率，预计2030年实现商用部署。",
+                    picUrl: "https://picsum.photos/seed/6g/400/220?blur=1",
+                    source: "通信世界",
+                    ctime: Math.floor(Date.now() / 1000) - 18000,
+                    url: "https://example.com/news5"
+                },
+                {
+                    title: "特斯拉发布新一代人形机器人Optimus Gen-2",
+                    description: "特斯拉在AI Day上展示Optimus Gen-2，行走速度提升30%，可完成精细操作，预计2025年投入工厂试用。",
+                    picUrl: "https://picsum.photos/seed/robot1/400/220?blur=1",
+                    source: "电动汽车网",
+                    ctime: Math.floor(Date.now() / 1000) - 21600,
+                    url: "https://example.com/news6"
+                },
+                {
+                    title: "阿里云发布通义千问3.0，开源模型登顶全球榜单",
+                    description: "阿里云正式发布通义千问3.0大模型，在多项国际权威评测中超越GPT-4，同时开源72B版本供开发者免费使用。",
+                    picUrl: "https://picsum.photos/seed/aliyun/400/220?blur=1",
+                    source: "阿里云",
+                    ctime: Math.floor(Date.now() / 1000) - 25200,
+                    url: "https://example.com/news7"
+                },
+                {
+                    title: "SpaceX星舰第五次试飞成功实现软着陆",
+                    description: "SpaceX星舰在第五次试飞中成功完成轨道飞行并实现软着陆，为未来载人火星任务奠定重要基础。",
+                    picUrl: "https://picsum.photos/seed/spacex/400/220?blur=1",
+                    source: "航天科技",
+                    ctime: Math.floor(Date.now() / 1000) - 28800,
+                    url: "https://example.com/news8"
+                }
+            ];
+        }
+    </script>
+</body>
+</html>
